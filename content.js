@@ -1,3 +1,5 @@
+// This content script can access the current tab's DOM.
+
 // Make collisions with existing classes on page very unlikely.
 const cssPrefix = `__xfy-`;
 const pfx = className => cssPrefix + className;
