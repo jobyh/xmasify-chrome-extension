@@ -1,34 +1,49 @@
-// Make collisions with existing classes
-// on page very unlikely.
+// Make collisions with existing classes on page very unlikely.
 const cssPrefix = `__xfy-`;
 const pfx = className => cssPrefix + className;
 
-const numSnowFlakes = 200;
-const snowflakes = [];
+let isEnabled = false;
+
+// TODO based on screen width AND background color (darker = fewer flakes)
+const numSnowFlakes = 300;
+let snowflakes = [];
 
 // How often to update snow animation.
 const framesPerSecond = 60;
+const frameMillis = 1000 / framesPerSecond;
+
+// Last time the snow animation was updated in milliseconds.
 let lastUpdate = new Date().getTime();
 
-// This is actually a very simple particle implementation.
 class Snowflake {
-  acceleration = 0.1;
   context;
   posX;
   posY;
   size;
-  velocityY;
+  velocity;
 
   constructor(drawingContext) {
+    this.context = drawingContext;
     this.posX = Math.random() * window.innerWidth;
     this.posY = Math.random() * window.innerHeight;
-    this.context = drawingContext;
     this.size = 2 + Math.random() * 3;
-    this.velocityY = this.size + 1;
+
+    // Multiplier 1.75 based on trial and error / what looks right.
+    // We want smaller flakes to move slower to give illusion of depth.
+    this.velocity = this.size * 1.75;
   }
 
+  isVisible() {
+    return this.posY - Math.ceil(this.size / 2) < window.innerHeight;
+  }
+
+  backToTop() {
+    this.posY = 0 - Math.ceil(this.size / 2);
+  }
+
+  // Update internal state for animation.
   update() {
-    this.posY += this.velocityY;
+    this.posY += this.velocity;
   }
 
   render() {
@@ -48,34 +63,47 @@ class Snowflake {
   }
 }
 
+// Animation loop for our snow.
 const snowLoop = drawingContext => {
-  window.requestAnimationFrame(() => snowLoop(drawingContext));
+  if (isEnabled === true) {
+    window.requestAnimationFrame(() => snowLoop(drawingContext));
+  }
 
   const now = new Date().getTime();
+  const timeDelta = now - lastUpdate;
 
-  if (now - lastUpdate < 1000 / framesPerSecond) {
+  // Enforce the frame rate set in our global variable.
+  if (timeDelta < frameMillis) {
     return;
   }
 
-  console.log("loopo");
+  // Reset canvas drawing area.
   drawingContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
+  // Loop through the snowflake objects, update state and render to canvas.
   for (let i = 0; i < snowflakes.length; i++) {
     const flake = snowflakes[i];
     flake.update();
 
-    if (flake.posY + Math.floor(flake.size / 2) > window.innerHeight) {
-      snowflakes[i].posY = 0 - Math.ceil(flake.size / 2);
+    // Snowflake is past the bottom of the visible area.
+    if (flake.isVisible() === false) {
+      flake.backToTop();
     }
 
-    snowflakes[i].render();
+    flake.render();
   }
 
   lastUpdate = new Date().getTime();
 };
 
-const makeItSnow = parentElement => {
-  const overlay = document.createElement("canvas");
+const makeItSnow = () => {
+  const parentElement = document.body;
+  let overlay = document.getElementById(pfx("overlay"));
+
+  if (overlay === null) {
+    overlay = document.createElement("canvas");
+  }
+
   overlay.width = window.innerWidth;
   overlay.height = window.innerHeight;
   const drawingContext = overlay.getContext("2d");
@@ -87,6 +115,9 @@ const makeItSnow = parentElement => {
   overlay.setAttribute("class", pfx("overlay"));
   parentElement.appendChild(overlay);
 
+  // Reset snowflakes array.
+  snowflakes = [];
+
   // Make some flakes!
   for (let i = 0; i < numSnowFlakes; i++) {
     snowflakes.push(new Snowflake(drawingContext));
@@ -95,4 +126,22 @@ const makeItSnow = parentElement => {
   snowLoop(drawingContext);
 };
 
-makeItSnow(document.body);
+const meltTheSnow = () => {
+  const canvas = document.getElementById(pfx("overlay"));
+  canvas.parentElement.removeChild(canvas);
+};
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.message !== "xmasify_clicked_action") return;
+
+  // Toggle enabled state.
+  isEnabled = !isEnabled;
+
+  if (isEnabled === true) {
+    makeItSnow();
+    window.addEventListener("resize", makeItSnow);
+  } else {
+    meltTheSnow();
+    window.removeEventListener("resize", makeItSnow);
+  }
+});
