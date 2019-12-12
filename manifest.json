@@ -11,6 +11,7 @@
     }
   ],
   "browser_action": {
+    "default_icon": "images/icon-disabled.png",
     "default_title": "Christmasify the web"
   },
   "background": {

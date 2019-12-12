@@ -141,6 +141,11 @@ const meltTheSnow = () => {
 };
 
 const init = () => {
+  chrome.runtime.sendMessage({
+    message: "xmasifyIsEnabled",
+    data: isEnabled
+  });
+
   if (isEnabled === true) {
     makeItSnow();
     window.addEventListener("resize", makeItSnow);
@@ -151,6 +156,7 @@ const init = () => {
   window.removeEventListener("resize", makeItSnow);
 };
 
+// TODO
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.message !== "xmasifyToggle") return;
 
