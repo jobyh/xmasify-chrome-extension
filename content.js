@@ -2,9 +2,13 @@
 const cssPrefix = `__xfy-`;
 const pfx = className => cssPrefix + className;
 
-let isEnabled = false;
+const localStorageKey = "xmasify";
+let isEnabled =
+  localStorage.getItem(localStorageKey) === null
+    ? false
+    : JSON.parse(localStorage.getItem(localStorageKey)).isEnabled;
 
-// TODO based on screen width AND background color (darker = fewer flakes)
+// TODO base on screen width AND background color (darker = fewer flakes)
 const numSnowFlakes = 300;
 let snowflakes = [];
 
@@ -127,21 +131,37 @@ const makeItSnow = () => {
 };
 
 const meltTheSnow = () => {
-  const canvas = document.getElementById(pfx("overlay"));
-  canvas.parentElement.removeChild(canvas);
+  const overlay = document.getElementById(pfx("overlay"));
+
+  if (overlay === null) {
+    return;
+  }
+
+  overlay.parentElement.removeChild(overlay);
 };
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.message !== "xmasify_clicked_action") return;
-
-  // Toggle enabled state.
-  isEnabled = !isEnabled;
-
+const init = () => {
   if (isEnabled === true) {
     makeItSnow();
     window.addEventListener("resize", makeItSnow);
-  } else {
-    meltTheSnow();
-    window.removeEventListener("resize", makeItSnow);
+    return;
   }
+
+  meltTheSnow();
+  window.removeEventListener("resize", makeItSnow);
+};
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.message !== "xmasifyToggle") return;
+
+  // Toggle enabled state.
+  isEnabled = !isEnabled;
+  localStorage.setItem(
+    localStorageKey,
+    JSON.stringify({ isEnabled: isEnabled })
+  );
+
+  init();
 });
+
+init();
