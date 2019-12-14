@@ -1,7 +1,22 @@
 # Christmasify Chrome Extension
-A bit of fun for the [Codebar] Brighton chapter Christmas show and tell on December 17th 2019.
+A bit of fun for the [Codebar](https://codebar.io/) Brighton chapter Christmas show and tell on December 17th 2019.
 Add some Christmas tat to any website. Includes animated snowfall and boughs of holly.
 
 I've provided plenty of comments in the source code if you're interested in having a rummage.
 
-Enjoy!
+Enjoy! 
+
+## License
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
