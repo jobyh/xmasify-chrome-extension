@@ -14,7 +14,8 @@
     {
       "js": ["content.js"],
       "css": ["main.css"],
-      "run_at": "document_end"
+      "run_at": "document_end",
+      "matches": ["http://*/*", "https://*/*"]
     }
   ],
   "browser_action": {
