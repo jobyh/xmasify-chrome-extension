@@ -1,11 +1,17 @@
 {
   "name": "Christmasify",
+  "short_name": "Xmasify",
   "version": "1.0",
   "description": "Make sites tackier for Christmas",
   "manifest_version": 2,
+  "icons": {
+    "128": "128.png"
+  },
+  "permissions": [
+    "activeTab"
+  ],
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
       "js": ["content.js"],
       "css": ["main.css"],
       "run_at": "document_end"
