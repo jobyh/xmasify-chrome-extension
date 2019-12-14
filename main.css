@@ -7,3 +7,14 @@
   z-index: 99999;
   pointer-events: none;
 }
+
+.__xfy-holly {
+  height: 5rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10vw;
+  /** background-image has to be set in the content script */
+  background-color: transparent;
+  z-index: 99998;
+}

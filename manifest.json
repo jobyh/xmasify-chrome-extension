@@ -1,7 +1,7 @@
 {
   "name": "Christmasify",
   "version": "1.0",
-  "description": "Make web pages more Christmassy",
+  "description": "Smell the tat.",
   "manifest_version": 2,
   "content_scripts": [
     {
@@ -17,5 +17,8 @@
   "background": {
     "scripts": ["background.js"],
     "persistent": false
-  }
+  },
+  "web_accessible_resources": [
+    "images/*.svg"
+  ]
 }

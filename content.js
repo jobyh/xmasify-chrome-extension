@@ -5,10 +5,7 @@ const cssPrefix = `__xfy-`;
 const pfx = className => cssPrefix + className;
 
 const localStorageKey = "xmasify";
-let isEnabled =
-  localStorage.getItem(localStorageKey) === null
-    ? false
-    : JSON.parse(localStorage.getItem(localStorageKey)).isEnabled;
+let isEnabled = false;
 
 // TODO base on screen width AND background color (darker = fewer flakes)
 const numSnowFlakes = 300;
@@ -39,10 +36,12 @@ class Snowflake {
     this.velocity = this.size * 1.75;
   }
 
+  // Is the flake still on screen?
   isVisible() {
     return this.posY - Math.ceil(this.size / 2) < window.innerHeight;
   }
 
+  // Move flake back to the top of screen to fall again.
   backToTop() {
     this.posY = 0 - Math.ceil(this.size / 2);
   }
@@ -142,7 +141,31 @@ const meltTheSnow = () => {
   overlay.parentElement.removeChild(overlay);
 };
 
+const deckTheHalls = () => {
+  const holly = document.createElement("div");
+  holly.setAttribute("id", pfx("holly"));
+  holly.setAttribute("class", pfx("holly"));
+  holly.setAttribute(
+    "style",
+    `background-image: url('${chrome.runtime.getURL("images/holly.svg")}');`
+  );
+
+  document.body.appendChild(holly);
+};
+
+const undeckTheHalls = () => {
+  const holly = document.getElementById(pfx("holly"));
+
+  if (holly === null) return;
+  holly.parentElement.removeChild(holly);
+};
+
 const init = () => {
+  isEnabled =
+    localStorage.getItem(localStorageKey) === null
+      ? false
+      : JSON.parse(localStorage.getItem(localStorageKey)).isEnabled;
+
   chrome.runtime.sendMessage({
     message: "xmasifyIsEnabled",
     data: isEnabled
@@ -150,25 +173,33 @@ const init = () => {
 
   if (isEnabled === true) {
     makeItSnow();
+    deckTheHalls();
     window.addEventListener("resize", makeItSnow);
     return;
   }
 
   meltTheSnow();
+  undeckTheHalls();
   window.removeEventListener("resize", makeItSnow);
 };
 
-// TODO
+// TODO don't add this multiple times. Chrome runtime
+// doesn't actually have a .removeListener !
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.message !== "xmasifyToggle") return;
+  if (request.message !== "xmasify:toggle") return;
 
-  // Toggle enabled state.
+  // Toggle enabled state and store it.
   isEnabled = !isEnabled;
   localStorage.setItem(
     localStorageKey,
     JSON.stringify({ isEnabled: isEnabled })
   );
 
+  init();
+});
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.message !== "xmasify:init") return;
   init();
 });
 

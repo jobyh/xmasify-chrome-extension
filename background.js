@@ -5,7 +5,14 @@
 // Extension icon click listener / handler.
 chrome.browserAction.onClicked.addListener(tab => {
   chrome.tabs.sendMessage(tab.id, {
-    message: "xmasifyToggle"
+    message: "xmasify:toggle"
+  });
+});
+
+// Reset whenever the active tab changes.
+chrome.tabs.onActivated.addListener(activeInfo => {
+  chrome.tabs.sendMessage(activeInfo.tabId, {
+    message: "xmasify:init"
   });
 });
 
