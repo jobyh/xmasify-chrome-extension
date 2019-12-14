@@ -4,6 +4,9 @@ Add some Christmas tat to any website. Includes animated snowfall and boughs of 
 
 I've provided plenty of comments in the source code if you're interested in having a rummage.
 
+Note that there are two JavaScript files for this extension: `content.js` and `background.js`
+which communicate via messages due to the way the Chrome extension API is architected.
+
 Enjoy! 
 
 ## License
