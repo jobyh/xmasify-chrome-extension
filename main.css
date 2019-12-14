@@ -9,12 +9,13 @@
 }
 
 .__xfy-holly {
-  height: 5rem;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 10vw;
+  position: relative;
+  float: right;
   /** background-image has to be set in the content script */
-  background-color: transparent;
   z-index: 99998;
+  width: 66px;
+  height: 74px;
+  background-size: 66px 74px;
+  background-color: transparent;
+  background-repeat: no-repeat;
 }

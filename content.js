@@ -18,6 +18,10 @@ const frameMillis = 1000 / framesPerSecond;
 // Last time the snow animation was updated in milliseconds.
 let lastUpdate = new Date().getTime();
 
+// Hackery. Poll the page in case client side rendering makes detecting DOM load tricky.
+const deckTheHallsRetries = 20;
+let deckTheHallsCount = 0;
+
 class Snowflake {
   context;
   posX;
@@ -142,22 +146,49 @@ const meltTheSnow = () => {
 };
 
 const deckTheHalls = () => {
-  const holly = document.createElement("div");
-  holly.setAttribute("id", pfx("holly"));
-  holly.setAttribute("class", pfx("holly"));
-  holly.setAttribute(
-    "style",
-    `background-image: url('${chrome.runtime.getURL("images/holly.svg")}');`
-  );
+  // If we already decked the halls don't add any
+  // more boughs of holly...
+  if (document.querySelector(`.${pfx("holly")}`) !== null) {
+    return;
+  }
 
-  document.body.appendChild(holly);
+  const headings = document.querySelectorAll("h1, h2, h3");
+
+  // This polling behaviour is a workaround for
+  // difficulties detecting when DOM has loaded
+  // when client-side rendering e.g. React is used.
+  if (
+    (headings === null || headings.length < 1) &&
+    deckTheHallsCount < deckTheHallsRetries
+  ) {
+    window.setTimeout(deckTheHalls, 500);
+    deckTheHallsCount += 1;
+    return;
+  }
+
+  if (deckTheHallsCount >= deckTheHallsRetries) {
+    return;
+  }
+
+  const hollyUrl = chrome.runtime.getURL("images/holly.png");
+
+  for (let i = 0; i < headings.length; i++) {
+    const holly = document.createElement("div");
+    holly.setAttribute("class", pfx("holly"));
+    holly.setAttribute("style", `background-image: url('${hollyUrl}');`);
+
+    headings[i].appendChild(holly);
+  }
 };
 
 const undeckTheHalls = () => {
-  const holly = document.getElementById(pfx("holly"));
+  const holly = document.querySelectorAll(`.${pfx("holly")}`);
 
   if (holly === null) return;
-  holly.parentElement.removeChild(holly);
+
+  for (let i = 0; i < holly.length; i++) {
+    holly[i].parentElement.removeChild(holly[i]);
+  }
 };
 
 const init = () => {
@@ -180,6 +211,7 @@ const init = () => {
 
   meltTheSnow();
   undeckTheHalls();
+  window.removeEventListener("load", deckTheHalls);
   window.removeEventListener("resize", makeItSnow);
 };
 
