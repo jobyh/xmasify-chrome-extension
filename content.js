@@ -192,13 +192,14 @@ const undeckTheHalls = () => {
 };
 
 const init = () => {
+  // Check whether xmasify state already exists.
   isEnabled =
     localStorage.getItem(localStorageKey) === null
       ? false
       : JSON.parse(localStorage.getItem(localStorageKey)).isEnabled;
 
   chrome.runtime.sendMessage({
-    message: "xmasifyIsEnabled",
+    message: "xmasify:isEnabled",
     data: isEnabled
   });
 

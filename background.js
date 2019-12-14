@@ -18,7 +18,7 @@ chrome.tabs.onActivated.addListener(activeInfo => {
 
 // Message listener / handler.
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.message !== "xmasifyIsEnabled") return;
+  if (request.message !== "xmasify:isEnabled") return;
 
   // Bit of a cheeky ternary operator in the template string here
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator
