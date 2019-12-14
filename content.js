@@ -212,7 +212,6 @@ const init = () => {
 
   meltTheSnow();
   undeckTheHalls();
-  window.removeEventListener("load", deckTheHalls);
   window.removeEventListener("resize", makeItSnow);
 };
 
