@@ -1,7 +1,7 @@
 {
   "name": "Christmasify",
   "version": "1.0",
-  "description": "Smell the tat.",
+  "description": "Make sites tackier for Christmas",
   "manifest_version": 2,
   "content_scripts": [
     {
