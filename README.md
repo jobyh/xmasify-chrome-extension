@@ -6,28 +6,36 @@ Add some Christmas tat to any website. Includes animated snowfall and boughs of 
 I've provided plenty of comments in the source code if you're interested in having a rummage.
 
 Note that there are two JavaScript files for this extension: `content.js` and `background.js`
-which communicate via messages due to the way the Chrome extension API is architected.
+which communicate via messages due to the way the Chrome extension API works.
 
 Enjoy!
 
-## Installing locally for development
+## Installing locally for development or larks
 
 Clone this repository into your local workspace:
 
 ```
-# Using your Github account
-$ git clone git@github.com:jobyh/xmasify-chrome-extension.git
-
-# ...or https as the repo is publicly accessible
 $ git clone https://github.com/jobyh/xmasify-chrome-extension.git
 ```
 
 Open up Chrome, paste `chrome://extensions` into the address bar and hit enter.
-You should see a button labelled &lsquo;Load unpacked&rsquo; click that and
-open the directory you just cloned in the dialog which follows.
+Toggle on Developer mode in the top right.
+
+![The Developer mode toggle switch](/docs/images/dev-mode-toggle.png)
+
+
+You should see a button labelled **Load unpacked**. Click that and
+open the directory you just cloned in the dialog which pops up.
+
+![Load unpacked button](/docs/images/load-unpacked-button.png)
+
 
 The extension should now appear in the listing. Lastly enable the plugin
-using the toggle switch.
+using the toggle switch. You should now see the icon in your browser bar.
+
+![Plugin listing for Christmasify](/docs/images/plugin-listing.png)
+
+Go make it snow! ☃
 
 ## License
 
