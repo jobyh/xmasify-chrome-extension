@@ -1,7 +1,7 @@
 {
   "name": "Christmasify",
   "short_name": "Xmasify",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Make sites tackier for Christmas",
   "manifest_version": 2,
   "icons": {
